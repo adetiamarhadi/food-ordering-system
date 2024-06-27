@@ -14,6 +14,10 @@ public class OrderItem extends BaseEntity<OrderItemId> {
 
     private OrderId orderId;
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public void initializeOrderItem(OrderId orderId, OrderItemId orderItemId) {
         this.orderId = orderId;
         super.setId(orderItemId);
@@ -31,6 +35,7 @@ public class OrderItem extends BaseEntity<OrderItemId> {
         quantity = builder.quantity;
         price = builder.price;
         subTotal = builder.subTotal;
+        orderId = builder.orderId;
     }
 
     public Product getProduct() {
@@ -59,12 +64,9 @@ public class OrderItem extends BaseEntity<OrderItemId> {
         private int quantity;
         private Money price;
         private Money subTotal;
+        private OrderId orderId;
 
         private Builder() {
-        }
-
-        public static Builder builder() {
-            return new Builder();
         }
 
         public Builder orderItemId(OrderItemId val) {
@@ -89,6 +91,11 @@ public class OrderItem extends BaseEntity<OrderItemId> {
 
         public Builder subTotal(Money val) {
             subTotal = val;
+            return this;
+        }
+
+        public Builder orderId(OrderId val) {
+            orderId = val;
             return this;
         }
 
