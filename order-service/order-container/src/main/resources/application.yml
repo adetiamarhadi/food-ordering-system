@@ -29,7 +29,7 @@ spring:
     initialization-mode: always
 
 kafka-config:
-  bootstrap-server: localhost:19092, localhost:29092, localhost:39092
+  bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
   schema-registry-url-key: schema.registry.url
   schema-registry-url: http://localhost:8081
   num-of-partitions: 3
@@ -38,7 +38,7 @@ kafka-config:
 kafka-producer-config:
   key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
   value-serializer-class: io.confluent.kafka.serializers.KafkaAvroSerializer
-  compression-type: snappy
+  compression-type: none
   acks: all
   batch-size: 16384
   batch-size-boost-factor: 100

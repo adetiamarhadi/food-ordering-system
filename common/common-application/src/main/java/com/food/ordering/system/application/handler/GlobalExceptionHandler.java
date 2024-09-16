@@ -28,9 +28,9 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler(value = {Exception.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorDTO handleException(ValidationException validationException) {
+    @ExceptionHandler(value = {ValidationException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleValidationException(ValidationException validationException) {
         ErrorDTO errorDTO;
         if (validationException instanceof ConstraintViolationException) {
             final String violations = extractViolationsFromException((ConstraintViolationException) validationException);
