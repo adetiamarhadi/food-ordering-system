@@ -3,5 +3,5 @@ package com.food.ordering.system.restaurant.service.domain.ports.input.message.l
 import com.food.ordering.system.restaurant.service.domain.dto.RestaurantApprovalRequest;
 
 public interface RestaurantApprovalRequestMessageListener {
-    void approvalOrder(RestaurantApprovalRequest restaurantApprovalRequest);
+    void approveOrder(RestaurantApprovalRequest restaurantApprovalRequest);
 }
