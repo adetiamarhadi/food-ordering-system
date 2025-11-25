@@ -41,7 +41,7 @@ public class OrderDomainServiceImpl implements OrderDomainService {
     }
 
     @Override
-    public void approvedOrder(Order order) {
+    public void approveOrder(Order order) {
         order.approve();
         log.info("Order with id: {} is approved", order.getId().getValue());
     }
