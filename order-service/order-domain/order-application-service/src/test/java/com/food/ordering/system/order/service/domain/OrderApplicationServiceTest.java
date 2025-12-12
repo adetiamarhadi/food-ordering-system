@@ -1,11 +1,8 @@
 package com.food.ordering.system.order.service.domain;
 
-import com.food.ordering.system.domain.valueobject.CustomerId;
-import com.food.ordering.system.domain.valueobject.Money;
-import com.food.ordering.system.domain.valueobject.OrderId;
-import com.food.ordering.system.domain.valueobject.OrderStatus;
-import com.food.ordering.system.domain.valueobject.ProductId;
-import com.food.ordering.system.domain.valueobject.RestaurantId;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.food.ordering.system.domain.valueobject.*;
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderCommand;
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.order.service.domain.dto.create.OrderAddress;
@@ -16,10 +13,15 @@ import com.food.ordering.system.order.service.domain.entity.Product;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.exception.OrderDomainException;
 import com.food.ordering.system.order.service.domain.mapper.OrderDataMapper;
+import com.food.ordering.system.order.service.domain.outbox.model.payment.OrderPaymentEventPayload;
+import com.food.ordering.system.order.service.domain.outbox.model.payment.OrderPaymentOutboxMessage;
 import com.food.ordering.system.order.service.domain.ports.input.service.OrderApplicationService;
 import com.food.ordering.system.order.service.domain.ports.output.repository.CustomerRepository;
 import com.food.ordering.system.order.service.domain.ports.output.repository.OrderRepository;
+import com.food.ordering.system.order.service.domain.ports.output.repository.PaymentOutboxRepository;
 import com.food.ordering.system.order.service.domain.ports.output.repository.RestaurantRepository;
+import com.food.ordering.system.outbox.OutboxStatus;
+import com.food.ordering.system.saga.SagaStatus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -27,10 +29,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.food.ordering.system.saga.order.SagaConstants.ORDER_SAGA_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -56,6 +60,12 @@ public class OrderApplicationServiceTest {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
+    @Autowired
+    private PaymentOutboxRepository paymentOutboxRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private CreateOrderCommand createOrderCommand;
     private CreateOrderCommand createOrderCommandWrongPrice;
     private CreateOrderCommand createOrderCommandWrongProductPrice;
@@ -63,6 +73,7 @@ public class OrderApplicationServiceTest {
     private final UUID RESTAURANT_ID = UUID.fromString("30f28f4c-9153-464e-b0a7-bfff19a9cc2a");
     private final UUID PRODUCT_ID = UUID.fromString("9140fcad-4514-4661-8540-4d0aae854df0");
     private final UUID ORDER_ID = UUID.fromString("ae2295c3-2bc6-4658-aa32-8505ae6e0624");
+    private final UUID SAGA_ID = UUID.fromString("ae2295c3-2bc6-4658-aa32-8505ae6e0624");
     private final BigDecimal PRICE = new BigDecimal("200.00");
 
     @BeforeAll
@@ -176,6 +187,7 @@ public class OrderApplicationServiceTest {
         when(restaurantRepository.findRestaurantInformation(orderDataMapper.createOrderCommandToRestaurant(createOrderCommand)))
                 .thenReturn(Optional.of(restaurantResponse));
         when(orderRepository.save(any(Order.class))).thenReturn(order);
+        when(paymentOutboxRepository.save(any(OrderPaymentOutboxMessage.class))).thenReturn(getOrderPaymentOutboxMessage());
     }
 
     @Test
@@ -201,6 +213,7 @@ public class OrderApplicationServiceTest {
         assertEquals("Order item price: 60.00 is not valid for product " + PRODUCT_ID, orderDomainException.getMessage());
     }
 
+    @Test
     void testCreateOrderWithPassiveRestaurant() {
         Restaurant restaurantResponse = Restaurant.builder()
                 .restaurantId(new RestaurantId(createOrderCommand.getRestaurantId()))
@@ -218,5 +231,36 @@ public class OrderApplicationServiceTest {
                 () -> orderApplicationService.createOrder(createOrderCommand));
         assertEquals("Restaurant with id " + RESTAURANT_ID + " is currently not active!",
                 orderDomainException.getMessage());
+    }
+
+    private OrderPaymentOutboxMessage getOrderPaymentOutboxMessage() {
+
+        OrderPaymentEventPayload orderPaymentEventPayload = OrderPaymentEventPayload.builder()
+                .orderId(ORDER_ID.toString())
+                .customerId(CUSTOMER_ID.toString())
+                .price(PRICE)
+                .paymentOrderStatus(PaymentOrderStatus.PENDING.name())
+                .createdAt(ZonedDateTime.now())
+                .build();
+
+        return OrderPaymentOutboxMessage.builder()
+                .id(UUID.randomUUID())
+                .sagaId(SAGA_ID)
+                .createdAt(ZonedDateTime.now())
+                .type(ORDER_SAGA_NAME)
+                .payload(createPayload(orderPaymentEventPayload))
+                .orderStatus(OrderStatus.PENDING)
+                .sagaStatus(SagaStatus.STARTED)
+                .outboxStatus(OutboxStatus.STARTED)
+                .version(0)
+                .build();
+    }
+
+    private String createPayload(OrderPaymentEventPayload orderPaymentEventPayload) {
+        try {
+            return objectMapper.writeValueAsString(orderPaymentEventPayload);
+        } catch (JsonProcessingException e) {
+            throw new OrderDomainException("Could not create OrderPaymentEventPayload object!");
+        }
     }
 }
