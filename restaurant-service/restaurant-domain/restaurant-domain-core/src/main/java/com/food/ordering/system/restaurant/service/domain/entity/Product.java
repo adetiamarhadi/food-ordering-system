@@ -5,13 +5,12 @@ import com.food.ordering.system.domain.valueobject.Money;
 import com.food.ordering.system.domain.valueobject.ProductId;
 
 public class Product extends BaseEntity<ProductId> {
-
     private String name;
     private Money price;
     private final int quantity;
     private boolean available;
 
-    public void updateWithConfirmedNamePriceAvailability(String name, Money price, boolean available) {
+    public void updateWithConfirmedNamePriceAndAvailability(String name, Money price, boolean available) {
         this.name = name;
         this.price = price;
         this.available = available;
