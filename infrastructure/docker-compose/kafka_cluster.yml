@@ -95,6 +95,8 @@ services:
       - "./volumes/debezium-connector-schemaregistry-7.2.5:/kafka/connect/debezium-connector-schemaregistry-7.2.5"
     networks:
       - ${GLOBAL_NETWORK:-kafka}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   kafka-ui:
     container_name: kafka-ui
     image: provectuslabs/kafka-ui:latest

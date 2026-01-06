@@ -3,7 +3,7 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package com.food.ordering.system.kafka.order.avro.model;
+package event;
 
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
@@ -12,26 +12,26 @@ import org.apache.avro.message.BinaryMessageDecoder;
 import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
-public class Product extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -6511580554663840009L;
+public class block extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
+  private static final long serialVersionUID = -1509139701355429768L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Product\",\"namespace\":\"com.food.ordering.system.kafka.order.avro.model\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"logicalType\":\"uuid\"},{\"name\":\"quantity\",\"type\":\"int\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"block\",\"namespace\":\"event\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"total_order\",\"type\":\"long\"},{\"name\":\"data_collection_order\",\"type\":\"long\"}],\"connect.version\":1,\"connect.name\":\"event.block\"}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
 
-  private static final BinaryMessageEncoder<Product> ENCODER =
+  private static final BinaryMessageEncoder<block> ENCODER =
       new BinaryMessageEncoder<>(MODEL$, SCHEMA$);
 
-  private static final BinaryMessageDecoder<Product> DECODER =
+  private static final BinaryMessageDecoder<block> DECODER =
       new BinaryMessageDecoder<>(MODEL$, SCHEMA$);
 
   /**
    * Return the BinaryMessageEncoder instance used by this class.
    * @return the message encoder used by this class
    */
-  public static BinaryMessageEncoder<Product> getEncoder() {
+  public static BinaryMessageEncoder<block> getEncoder() {
     return ENCODER;
   }
 
@@ -39,7 +39,7 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
    * Return the BinaryMessageDecoder instance used by this class.
    * @return the message decoder used by this class
    */
-  public static BinaryMessageDecoder<Product> getDecoder() {
+  public static BinaryMessageDecoder<block> getDecoder() {
     return DECODER;
   }
 
@@ -48,12 +48,12 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
    * @param resolver a {@link SchemaStore} used to find schemas by fingerprint
    * @return a BinaryMessageDecoder instance for this class backed by the given SchemaStore
    */
-  public static BinaryMessageDecoder<Product> createDecoder(SchemaStore resolver) {
+  public static BinaryMessageDecoder<block> createDecoder(SchemaStore resolver) {
     return new BinaryMessageDecoder<>(MODEL$, SCHEMA$, resolver);
   }
 
   /**
-   * Serializes this Product to a ByteBuffer.
+   * Serializes this block to a ByteBuffer.
    * @return a buffer holding the serialized data for this instance
    * @throws java.io.IOException if this instance could not be serialized
    */
@@ -62,34 +62,37 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
   }
 
   /**
-   * Deserializes a Product from a ByteBuffer.
+   * Deserializes a block from a ByteBuffer.
    * @param b a byte buffer holding serialized data for an instance of this class
-   * @return a Product instance decoded from the given buffer
+   * @return a block instance decoded from the given buffer
    * @throws java.io.IOException if the given bytes could not be deserialized into an instance of this class
    */
-  public static Product fromByteBuffer(
+  public static block fromByteBuffer(
       java.nio.ByteBuffer b) throws java.io.IOException {
     return DECODER.decode(b);
   }
 
   private java.lang.String id;
-  private int quantity;
+  private long total_order;
+  private long data_collection_order;
 
   /**
    * Default constructor.  Note that this does not initialize fields
    * to their default values from the schema.  If that is desired then
    * one should use <code>newBuilder()</code>.
    */
-  public Product() {}
+  public block() {}
 
   /**
    * All-args constructor.
    * @param id The new value for id
-   * @param quantity The new value for quantity
+   * @param total_order The new value for total_order
+   * @param data_collection_order The new value for data_collection_order
    */
-  public Product(java.lang.String id, java.lang.Integer quantity) {
+  public block(java.lang.String id, java.lang.Long total_order, java.lang.Long data_collection_order) {
     this.id = id;
-    this.quantity = quantity;
+    this.total_order = total_order;
+    this.data_collection_order = data_collection_order;
   }
 
   @Override
@@ -103,7 +106,8 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return id;
-    case 1: return quantity;
+    case 1: return total_order;
+    case 2: return data_collection_order;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -114,7 +118,8 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
     case 0: id = value$ != null ? value$.toString() : null; break;
-    case 1: quantity = (java.lang.Integer)value$; break;
+    case 1: total_order = (java.lang.Long)value$; break;
+    case 2: data_collection_order = (java.lang.Long)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -137,65 +142,83 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
   }
 
   /**
-   * Gets the value of the 'quantity' field.
-   * @return The value of the 'quantity' field.
+   * Gets the value of the 'total_order' field.
+   * @return The value of the 'total_order' field.
    */
-  public int getQuantity() {
-    return quantity;
+  public long getTotalOrder() {
+    return total_order;
   }
 
 
   /**
-   * Sets the value of the 'quantity' field.
+   * Sets the value of the 'total_order' field.
    * @param value the value to set.
    */
-  public void setQuantity(int value) {
-    this.quantity = value;
+  public void setTotalOrder(long value) {
+    this.total_order = value;
   }
 
   /**
-   * Creates a new Product RecordBuilder.
-   * @return A new Product RecordBuilder
+   * Gets the value of the 'data_collection_order' field.
+   * @return The value of the 'data_collection_order' field.
    */
-  public static com.food.ordering.system.kafka.order.avro.model.Product.Builder newBuilder() {
-    return new com.food.ordering.system.kafka.order.avro.model.Product.Builder();
+  public long getDataCollectionOrder() {
+    return data_collection_order;
+  }
+
+
+  /**
+   * Sets the value of the 'data_collection_order' field.
+   * @param value the value to set.
+   */
+  public void setDataCollectionOrder(long value) {
+    this.data_collection_order = value;
   }
 
   /**
-   * Creates a new Product RecordBuilder by copying an existing Builder.
+   * Creates a new block RecordBuilder.
+   * @return A new block RecordBuilder
+   */
+  public static event.block.Builder newBuilder() {
+    return new event.block.Builder();
+  }
+
+  /**
+   * Creates a new block RecordBuilder by copying an existing Builder.
    * @param other The existing builder to copy.
-   * @return A new Product RecordBuilder
+   * @return A new block RecordBuilder
    */
-  public static com.food.ordering.system.kafka.order.avro.model.Product.Builder newBuilder(com.food.ordering.system.kafka.order.avro.model.Product.Builder other) {
+  public static event.block.Builder newBuilder(event.block.Builder other) {
     if (other == null) {
-      return new com.food.ordering.system.kafka.order.avro.model.Product.Builder();
+      return new event.block.Builder();
     } else {
-      return new com.food.ordering.system.kafka.order.avro.model.Product.Builder(other);
+      return new event.block.Builder(other);
     }
   }
 
   /**
-   * Creates a new Product RecordBuilder by copying an existing Product instance.
+   * Creates a new block RecordBuilder by copying an existing block instance.
    * @param other The existing instance to copy.
-   * @return A new Product RecordBuilder
+   * @return A new block RecordBuilder
    */
-  public static com.food.ordering.system.kafka.order.avro.model.Product.Builder newBuilder(com.food.ordering.system.kafka.order.avro.model.Product other) {
+  public static event.block.Builder newBuilder(event.block other) {
     if (other == null) {
-      return new com.food.ordering.system.kafka.order.avro.model.Product.Builder();
+      return new event.block.Builder();
     } else {
-      return new com.food.ordering.system.kafka.order.avro.model.Product.Builder(other);
+      return new event.block.Builder(other);
     }
   }
 
   /**
-   * RecordBuilder for Product instances.
+   * RecordBuilder for block instances.
    */
   @org.apache.avro.specific.AvroGenerated
-  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<Product>
-    implements org.apache.avro.data.RecordBuilder<Product> {
+  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<block>
+    implements org.apache.avro.data.RecordBuilder<block> {
 
     private java.lang.String id;
-    private int quantity;
+    private long total_order;
+    private long data_collection_order;
 
     /** Creates a new Builder */
     private Builder() {
@@ -206,31 +229,39 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(com.food.ordering.system.kafka.order.avro.model.Product.Builder other) {
+    private Builder(event.block.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.id)) {
         this.id = data().deepCopy(fields()[0].schema(), other.id);
         fieldSetFlags()[0] = other.fieldSetFlags()[0];
       }
-      if (isValidValue(fields()[1], other.quantity)) {
-        this.quantity = data().deepCopy(fields()[1].schema(), other.quantity);
+      if (isValidValue(fields()[1], other.total_order)) {
+        this.total_order = data().deepCopy(fields()[1].schema(), other.total_order);
         fieldSetFlags()[1] = other.fieldSetFlags()[1];
+      }
+      if (isValidValue(fields()[2], other.data_collection_order)) {
+        this.data_collection_order = data().deepCopy(fields()[2].schema(), other.data_collection_order);
+        fieldSetFlags()[2] = other.fieldSetFlags()[2];
       }
     }
 
     /**
-     * Creates a Builder by copying an existing Product instance
+     * Creates a Builder by copying an existing block instance
      * @param other The existing instance to copy.
      */
-    private Builder(com.food.ordering.system.kafka.order.avro.model.Product other) {
+    private Builder(event.block other) {
       super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.id)) {
         this.id = data().deepCopy(fields()[0].schema(), other.id);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.quantity)) {
-        this.quantity = data().deepCopy(fields()[1].schema(), other.quantity);
+      if (isValidValue(fields()[1], other.total_order)) {
+        this.total_order = data().deepCopy(fields()[1].schema(), other.total_order);
         fieldSetFlags()[1] = true;
+      }
+      if (isValidValue(fields()[2], other.data_collection_order)) {
+        this.data_collection_order = data().deepCopy(fields()[2].schema(), other.data_collection_order);
+        fieldSetFlags()[2] = true;
       }
     }
 
@@ -248,7 +279,7 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
       * @param value The value of 'id'.
       * @return This builder.
       */
-    public com.food.ordering.system.kafka.order.avro.model.Product.Builder setId(java.lang.String value) {
+    public event.block.Builder setId(java.lang.String value) {
       validate(fields()[0], value);
       this.id = value;
       fieldSetFlags()[0] = true;
@@ -268,58 +299,98 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
       * Clears the value of the 'id' field.
       * @return This builder.
       */
-    public com.food.ordering.system.kafka.order.avro.model.Product.Builder clearId() {
+    public event.block.Builder clearId() {
       id = null;
       fieldSetFlags()[0] = false;
       return this;
     }
 
     /**
-      * Gets the value of the 'quantity' field.
+      * Gets the value of the 'total_order' field.
       * @return The value.
       */
-    public int getQuantity() {
-      return quantity;
+    public long getTotalOrder() {
+      return total_order;
     }
 
 
     /**
-      * Sets the value of the 'quantity' field.
-      * @param value The value of 'quantity'.
+      * Sets the value of the 'total_order' field.
+      * @param value The value of 'total_order'.
       * @return This builder.
       */
-    public com.food.ordering.system.kafka.order.avro.model.Product.Builder setQuantity(int value) {
+    public event.block.Builder setTotalOrder(long value) {
       validate(fields()[1], value);
-      this.quantity = value;
+      this.total_order = value;
       fieldSetFlags()[1] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'quantity' field has been set.
-      * @return True if the 'quantity' field has been set, false otherwise.
+      * Checks whether the 'total_order' field has been set.
+      * @return True if the 'total_order' field has been set, false otherwise.
       */
-    public boolean hasQuantity() {
+    public boolean hasTotalOrder() {
       return fieldSetFlags()[1];
     }
 
 
     /**
-      * Clears the value of the 'quantity' field.
+      * Clears the value of the 'total_order' field.
       * @return This builder.
       */
-    public com.food.ordering.system.kafka.order.avro.model.Product.Builder clearQuantity() {
+    public event.block.Builder clearTotalOrder() {
       fieldSetFlags()[1] = false;
+      return this;
+    }
+
+    /**
+      * Gets the value of the 'data_collection_order' field.
+      * @return The value.
+      */
+    public long getDataCollectionOrder() {
+      return data_collection_order;
+    }
+
+
+    /**
+      * Sets the value of the 'data_collection_order' field.
+      * @param value The value of 'data_collection_order'.
+      * @return This builder.
+      */
+    public event.block.Builder setDataCollectionOrder(long value) {
+      validate(fields()[2], value);
+      this.data_collection_order = value;
+      fieldSetFlags()[2] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'data_collection_order' field has been set.
+      * @return True if the 'data_collection_order' field has been set, false otherwise.
+      */
+    public boolean hasDataCollectionOrder() {
+      return fieldSetFlags()[2];
+    }
+
+
+    /**
+      * Clears the value of the 'data_collection_order' field.
+      * @return This builder.
+      */
+    public event.block.Builder clearDataCollectionOrder() {
+      fieldSetFlags()[2] = false;
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Product build() {
+    public block build() {
       try {
-        Product record = new Product();
+        block record = new block();
         record.id = fieldSetFlags()[0] ? this.id : (java.lang.String) defaultValue(fields()[0]);
-        record.quantity = fieldSetFlags()[1] ? this.quantity : (java.lang.Integer) defaultValue(fields()[1]);
+        record.total_order = fieldSetFlags()[1] ? this.total_order : (java.lang.Long) defaultValue(fields()[1]);
+        record.data_collection_order = fieldSetFlags()[2] ? this.data_collection_order : (java.lang.Long) defaultValue(fields()[2]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -330,8 +401,8 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
   }
 
   @SuppressWarnings("unchecked")
-  private static final org.apache.avro.io.DatumWriter<Product>
-    WRITER$ = (org.apache.avro.io.DatumWriter<Product>)MODEL$.createDatumWriter(SCHEMA$);
+  private static final org.apache.avro.io.DatumWriter<block>
+    WRITER$ = (org.apache.avro.io.DatumWriter<block>)MODEL$.createDatumWriter(SCHEMA$);
 
   @Override public void writeExternal(java.io.ObjectOutput out)
     throws java.io.IOException {
@@ -339,8 +410,8 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
   }
 
   @SuppressWarnings("unchecked")
-  private static final org.apache.avro.io.DatumReader<Product>
-    READER$ = (org.apache.avro.io.DatumReader<Product>)MODEL$.createDatumReader(SCHEMA$);
+  private static final org.apache.avro.io.DatumReader<block>
+    READER$ = (org.apache.avro.io.DatumReader<block>)MODEL$.createDatumReader(SCHEMA$);
 
   @Override public void readExternal(java.io.ObjectInput in)
     throws java.io.IOException {
@@ -354,7 +425,9 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
   {
     out.writeString(this.id);
 
-    out.writeInt(this.quantity);
+    out.writeLong(this.total_order);
+
+    out.writeLong(this.data_collection_order);
 
   }
 
@@ -365,17 +438,23 @@ public class Product extends org.apache.avro.specific.SpecificRecordBase impleme
     if (fieldOrder == null) {
       this.id = in.readString();
 
-      this.quantity = in.readInt();
+      this.total_order = in.readLong();
+
+      this.data_collection_order = in.readLong();
 
     } else {
-      for (int i = 0; i < 2; i++) {
+      for (int i = 0; i < 3; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.id = in.readString();
           break;
 
         case 1:
-          this.quantity = in.readInt();
+          this.total_order = in.readLong();
+          break;
+
+        case 2:
+          this.data_collection_order = in.readLong();
           break;
 
         default:

@@ -1,0 +1,22 @@
+{
+  "name": "block",
+  "type": "record",
+  "namespace": "event",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "total_order",
+      "type": "long"
+    },
+    {
+      "name": "data_collection_order",
+      "type": "long"
+    }
+  ],
+  "connect.version": 1,
+  "connect.name": "event.block"
+}
+

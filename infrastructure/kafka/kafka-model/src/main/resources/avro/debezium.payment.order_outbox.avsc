@@ -1,0 +1,129 @@
+{
+    "type": "record",
+    "name": "Envelope",
+    "namespace": "debezium.payment.order_outbox",
+    "fields": [
+        {
+            "name": "before",
+            "type": [
+                "null",
+                {
+                    "type": "record",
+                    "name": "Value",
+                    "fields": [
+                        {
+                            "name": "id",
+                            "type": {
+                                "type": "string",
+                                "connect.version": 1,
+                                "connect.name": "io.debezium.data.Uuid"
+                            }
+                        },
+                        {
+                            "name": "saga_id",
+                            "type": {
+                                "type": "string",
+                                "connect.version": 1,
+                                "connect.name": "io.debezium.data.Uuid"
+                            }
+                        },
+                        {
+                            "name": "created_at",
+                            "type": {
+                                "type": "string",
+                                "connect.version": 1,
+                                "connect.name": "io.debezium.time.ZonedTimestamp"
+                            }
+                        },
+                        {
+                            "name": "processed_at",
+                            "type": [
+                                "null",
+                                {
+                                    "type": "string",
+                                    "connect.version": 1,
+                                    "connect.name": "io.debezium.time.ZonedTimestamp"
+                                }
+                            ],
+                            "default": null
+                        },
+                        {
+                            "name": "type",
+                            "type": "string"
+                        },
+                        {
+                            "name": "payload",
+                            "type": {
+                                "type": "string",
+                                "connect.version": 1,
+                                "connect.name": "io.debezium.data.Json"
+                            }
+                        },
+                        {
+                            "name": "outbox_status",
+                            "type": {
+                                "type": "string",
+                                "connect.version": 1,
+                                "connect.parameters": {
+                                    "allowed": "STARTED,COMPLETED,FAILED"
+                                },
+                                "connect.name": "io.debezium.data.Enum"
+                            }
+                        },
+                        {
+                            "name": "payment_status",
+                            "type": {
+                                "type": "string",
+                                "connect.version": 1,
+                                "connect.parameters": {
+                                    "allowed": "COMPLETED,CANCELLED,FAILED"
+                                },
+                                "connect.name": "io.debezium.data.Enum"
+                            }
+                        },
+                        {
+                            "name": "version",
+                            "type": "int"
+                        }
+                    ],
+                    "connect.name": "debezium.payment.order_outbox.Value"
+                }
+            ],
+            "default": null
+        },
+        {
+            "name": "after",
+            "type": [
+                "null",
+                "Value"
+            ],
+            "default": null
+        },
+        {
+            "name": "source",
+            "type": "io.debezium.connector.postgresql.Source"
+        },
+        {
+            "name": "op",
+            "type": "string"
+        },
+        {
+            "name": "ts_ms",
+            "type": [
+                "null",
+                "long"
+            ],
+            "default": null
+        },
+        {
+            "name": "transaction",
+            "type": [
+                "null",
+                "event.block"
+            ],
+            "default": null
+        }
+    ],
+    "connect.version": 1,
+    "connect.name": "debezium.payment.order_outbox.Envelope"
+}
